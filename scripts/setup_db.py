@@ -1,0 +1,12 @@
+from lib.db.connection import get_connection
+from lib.db.seed import seed_data
+
+def setup_db():
+    conn = get_connection()
+    with open("lib/db/schema.sql") as f:
+        conn.executescript(f.read())
+    seed_data()
+    print("Database setup complete.")
+
+if __name__ == "__main__":
+    setup_db()
