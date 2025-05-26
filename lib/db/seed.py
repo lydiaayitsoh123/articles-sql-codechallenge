@@ -1,23 +1,19 @@
-from lib.models.author import Author
-from lib.models.magazine import Magazine
-from lib.models.article import Article
+from .connection import get_connection
 
 def seed_data():
-    Author.delete_all()
-    Magazine.delete_all()
-    Article.delete_all()
+    conn = get_connection()
+    cursor = conn.cursor()
 
-    a1 = Author.create("Alice")
-    a2 = Author.create("Bob")
-    a3 = Author.create("Charlie")
+    
+    cursor.execute("INSERT INTO authors (name) VALUES (?)", ("Alice",))
+    cursor.execute("INSERT INTO authors (name) VALUES (?)", ("Bob",))
 
-    m1 = Magazine.create("Tech Monthly", "Technology")
-    m2 = Magazine.create("Health Today", "Health")
-    m3 = Magazine.create("Nature Weekly", "Science")
+    
+    cursor.execute("INSERT INTO magazines (name, category) VALUES (?, ?)", ("Tech Weekly", "Technology"))
+    cursor.execute("INSERT INTO magazines (name, category) VALUES (?, ?)", ("Health Today", "Health"))
 
-    a1.add_article(m1, "Python Tips")
-    a1.add_article(m2, "Healthy Coding")
-    a2.add_article(m1, "AI Trends")
-    a3.add_article(m1, "Quantum Computing")
-    a3.add_article(m1, "More Quantum Stuff")
-    a3.add_article(m1, "Quantum Finale")
+    cursor.execute("INSERT INTO articles (title, author_id, magazine_id) VALUES (?, ?, ?)", ("AI in 2025", 1, 1))
+    cursor.execute("INSERT INTO articles (title, author_id, magazine_id) VALUES (?, ?, ?)", ("Healthy Living Tips", 2, 2))
+
+    conn.commit()
+    conn.close()
